@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+
+  <title>HTML5 Video Custom Controls</title>
+  <meta name="description" content="">
+  
+  <script src="http://code.jquery.com/jquery-1.7.2.min.js"></script>
+  
+  <style>
+	body {
+		margin:0;
+		padding:0;
+		background-color:#000;
+	}
+	video {
+		position: absolute;
+		top:0;
+		left:0;
+	}
+	#play{
+		position: absolute;
+		top:50%;
+		left:50%;
+		margin-left: -49px;
+		margin-top: -49px;
+	}
+	#progressbar{
+		position: absolute;
+		top:0px;
+		width:90%;
+		height:100%;
+		display:block;
+		background-color:#000;
+		left:51px;
+	}
+	#seeker{
+		position:absolute;
+		top:50%;
+		width:100%;
+		height:2px;
+		background-color:#ea0003;
+		-webkit-transition: all .2s ease-out;
+	}
+	#controls {
+		position: absolute;
+		width:100%;
+		bottom:0;
+		height:50px;
+		overflow:hidden;
+	}
+	#footerplay{
+		width:51px;
+	}
+	#footerpause{
+		display:none;
+	}
+	</style>
+	
+	
+  
+</head>
+<body>
+	
+	  <video width="100%" height="100%" id="player">
+	    <source src='video/video.m4v' />
+	  </video>
+	  
+	  <div id="play"><img src="img/play.png" /></div>
+	  <div id="controls">
+	  	  <div id="footerplay"><img src="img/footer-play.png" /></div>
+	  	  <div id="footerpause"><img src="img/footer-pause.png" /></div>
+		  <div id="progressbar">
+		  	<div id="seeker"></div>
+		  </div>
+	  </div>
+	
+	<script>
+		
+		
+		$("#progressbar").width(window.innerWidth-51-10);
+		
+		var video=document.getElementById('player');
+		
+		video.addEventListener('timeupdate',function(e) {
+			var s=e.target.currentTime;
+			var t=e.target.duration;
+			$("#seeker").width(s/t*100+"%");
+		}, true);
+		
+		video.addEventListener('ended',function(e) {
+			document.getElementById('player').currentTime = 0;
+			$("#play").fadeIn();
+			$("#footerplay").fadeIn();
+			$("#footerpause").fadeOut();
+		}, true);
+		
+		video.addEventListener('play',function(e) {
+			$("#play").fadeOut();
+			$("#footerplay").fadeOut();
+			$("#footerpause").fadeIn();
+		}, true);
+		
+		video.addEventListener('pause',function(e) {
+			$("#play").fadeIn();
+			$("#footerplay").fadeIn();
+			$("#footerpause").fadeOut();
+		}, true);
+		
+		$("#progressbar").bind('click',function(e){
+			var x = e.pageX - this.offsetLeft;
+			var y = e.pageY - this.offsetTop;
+			var percentage = x/$("#progressbar").width() * video.duration;
+			document.getElementById('player').currentTime = percentage;
+		})
+		$("#play").bind('click',function(){
+			document.getElementById('player').play();
+		});
+		$("#footerplay").bind('click',function(){
+			document.getElementById('player').play();
+		});
+		$("#footerpause").bind('click',function(){
+			document.getElementById('player').pause();
+		});
+		$("#close").bind('click',function(){
+			window.location = "behindthescenes.html";
+		})
+		$(window).bind('resize',function(){
+			$("#progressbar").width(window.innerWidth-51-10);
+		})
+		$(window).bind('orientationchange',function(){
+			$("#progressbar").width(window.innerWidth-51-10);
+		})
+		
+	</script>
+	
+</body>
+</html>
